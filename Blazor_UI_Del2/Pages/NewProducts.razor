@@ -1,0 +1,65 @@
+﻿@page "/productsFITTA"
+@using System.Net.Http.Headers
+@inject HttpClient Http
+@inject HttpMessageHandler HttpMsgHandler
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+
+<h2>Produkter</h2>
+
+@if(products == null)
+{
+    <p>laddar...</p>
+}
+else
+{
+    foreach(var p in products)
+    {
+
+     <div class="row mt-3">
+        <div class="col-md-3 mb-2">
+            <a href="#">
+                <div class="card">
+                    <img class="img-thumbnail" src="@p.ImgUrl" />
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            @p.Name
+                        </h5>
+                        <p class="text-muted mb-1"><small>@p.CategoryName</small></p>
+                        <p class="card-text">
+                            <i>@p.Description</i>
+                        </p>
+                        <p class="card-text">
+                            <b>@p.Price.ToString("C")</b>
+                        </p>
+                    </div>
+                    <button class="btn btn-primary">Köp</button>
+                </div>
+            </a>
+        </div>
+      </div>
+    }
+}
+
+@code {
+    private Product[]? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //var accessToken = await sessionStorage.GetItemAsync<string>("AccessToken");
+
+        products = await Http.GetFromJsonAsync<Product[]>("https://localhost:7245/api/Products");
+
+        //, new AuthenticationHeaderValue("Bearer", accessToken));
+    }
+
+    public class Product
+    {
+        public string ArticleNumber { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public decimal Price { get; set; }
+        public string Description { get; set; } = null!;
+        public string CategoryName { get; set; } = null!;
+        public string ImgUrl { get; set; } = null!;
+    }
+}

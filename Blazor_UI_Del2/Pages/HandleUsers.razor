@@ -1,0 +1,47 @@
+﻿@page "/admin/handleuser"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h2>Adminsida för produkter</h2>
+
+@if(users == null)
+{
+    <p>laddar...</p>
+}
+else
+{
+    foreach(var u in users)
+    {
+        <div class="mb-5">
+            <p><strong>@u.Id </strong></p>
+            <p><strong>@u.Email </strong></p>
+            <p><strong>@u.FirstName </strong></p>
+            <p><strong>@u.LastName </strong></p>
+            <p><strong>@u.AdressLine </strong></p>
+            <p><strong>@u.ZipCode </strong></p>
+            <p><strong>@u.City </strong></p>
+            <NavLink href="@("/admin/removeuser/" + u.Id)" class="btn btn-danger">Ta bort användare</NavLink>
+            <NavLink href="@("/admin/updateuser/" + u.Id)" class="btn btn-secondary">Updatera användare</NavLink>
+        </div>
+    }
+}
+
+@code {
+    private User[]? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await Http.GetFromJsonAsync<User[]>("https://localhost:7245/api/User");
+    }
+
+    public class User
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string AdressLine { get; set; }
+        public string ZipCode { get; set; }
+        public string City { get; set; }
+        public string Email { get; set; }
+    }
+}

@@ -1,0 +1,40 @@
+﻿@page "/admin/addproduct"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h2>Adminsida för produkter</h2>
+
+<div class ="container">
+    <h6>Lägg till en ny produkt</h6>
+    <EditForm Model ="@Model" OnSubmit="HandleSubmit">
+        <InputText @bind-Value="Model.ArticleNumber" placeholder="Artikelnummer" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="Model.Name" placeholder="Produktens namn" class="form-control mb-1"></InputText>
+        <InputNumber @bind-Value="Model.Price" placeholder="Pris (SEK)" class="form-control mb-1"></InputNumber>
+        <InputText @bind-Value="Model.Description" placeholder="Produktbeskrivning" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="Model.CategoryName" placeholder="Kategori" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="Model.ImgUrl" placeholder="Produktbild" class="form-control mb-1"></InputText>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </EditForm>
+</div>
+
+
+@code {
+    public FormModel Model = new();
+
+    public async Task HandleSubmit()
+    {
+        var result = await Http.PostAsJsonAsync("https://localhost:7245/api/Products", Model);
+        if (result.IsSuccessStatusCode)
+            NavigationManager.NavigateTo("/products");
+    }
+
+    public class FormModel
+    {
+        public string ArticleNumber { get; set; } = null!;
+        public string Name { get; set; }= null!;
+        public decimal Price { get; set; }
+        public string Description { get; set; } = null!;
+        public string CategoryName { get; set; } = null!;
+        public string ImgUrl { get; set; } = null!;
+    }
+}

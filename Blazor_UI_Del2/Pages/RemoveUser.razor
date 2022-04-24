@@ -1,0 +1,16 @@
+﻿@page "/admin/removeuser/{id}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+
+@code {
+    [Parameter]
+    public string id { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Http.DeleteAsync("https://localhost:7245/api/User/id?id=" + id);
+        if (result.IsSuccessStatusCode)
+            NavigationManager.NavigateTo("admin/handleuser");
+    }
+}

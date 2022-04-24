@@ -1,0 +1,70 @@
+﻿@page "/admin/updateproduct/{artnr}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@Model" OnSubmit="HandleSubmit">
+    <h3>Update Product</h3>
+    <hr />
+    <ValidationSummary/>
+    <div class="form-group row">
+        <laber for="Name" class="col-sm-2 col-form-label">
+            Product Name
+        </laber>
+        <div class="col-sm-10">
+            <InputText id="Name" class="form-control" placeholder="Product Name"
+                @bind-Value="Model.Name" />            
+        </div>
+    </div>
+    <div class="form-group row">
+        <laber for="Price" class="col-sm-2 col-form-label">
+            Product Price
+        </laber>
+        <div class="col-sm-10">
+            <InputNumber id="Price" class="form-control" placeholder="Product Name"
+                @bind-Value="Model.Price" />            
+        </div>
+    </div>
+    <div class="form-group row">
+        <laber for="Description" class="col-sm-2 col-form-label">
+            Product Description
+        </laber>
+        <div class="col-sm-10">
+            <InputText id="Description" class="form-control" placeholder="Product Description"
+                @bind-Value="Model.Description" />            
+        </div>
+    </div>
+    <div class="form-group row">
+        <laber for="ImgUrl" class="col-sm-2 col-form-label">
+            Product ImgUrl
+        </laber>
+        <div class="col-sm-10">
+            <InputText id="ImgUrl" class="form-control" placeholder="Product ImgUrl"
+                @bind-Value="Model.ImgUrl" />            
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</EditForm>
+
+
+@code {
+
+    public FormModel Model = new();
+
+    [Parameter]
+    public string artnr { get; set; } = null!;
+
+    public async Task HandleSubmit()
+    {
+        var result = await Http.PutAsJsonAsync("https://localhost:7245/api/Products/artnr?artnr=" + artnr, Model);
+        if (result.IsSuccessStatusCode)
+            NavigationManager.NavigateTo("/admin/deleteproduct");
+    }
+
+    public class FormModel
+    {
+        public string Name { get; set; }= null!;
+        public decimal Price { get; set; }
+        public string Description { get; set; } = null!;
+        public string ImgUrl { get; set; } = null!;
+    }
+}

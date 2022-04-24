@@ -1,0 +1,54 @@
+﻿@using static Blazor_UI_Del2.Pages.Shop
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@if (hasLoaded)
+{
+    <CascadingValue Value="@this">
+        @ChildContent
+    </CascadingValue>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+
+    [Parameter] 
+    public RenderFragment ChildContent { get; set; }
+
+    public Cart ShoppingCart { get; set; }
+
+    bool hasLoaded;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Retrieve the Shopping Cart from Local Storage (in the browser)
+        ShoppingCart = await sessionStorage.GetItemAsync<Cart>("MyShoppingCart");
+
+        // If the Cart is not there or empty...
+        if (ShoppingCart == null || ShoppingCart.Items.Count == 0)
+        {
+            // Create a new Cart
+            ShoppingCart = new Cart();
+        }
+        else
+        {
+            // otherwise, check to see if the Cart has expired (default is 30 seconds)
+            if (DateTime.Now > ShoppingCart.LastAccessed.AddSeconds(ShoppingCart.TimeToLiveInSeconds))          
+            {
+                // Expired. Create a new cart.
+                ShoppingCart = new Cart();
+            }
+        }
+        ShoppingCart.LastAccessed = DateTime.Now;
+        hasLoaded = true;
+    }
+
+    public async Task SaveChangesAsync() 
+    {
+        // Set the time stamp to current time and save to local storage (in the browser).
+        ShoppingCart.LastAccessed = DateTime.Now;
+        await sessionStorage.SetItemAsync("MyShoppingCart", ShoppingCart);
+    }
+}

@@ -1,0 +1,47 @@
+﻿@page "/admin/deleteproduct"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using System.Net.Http.Headers
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<h2>Adminsida för produkter</h2>
+
+@if(products == null)
+{
+    <p>laddar...</p>
+}
+else
+{
+    foreach(var p in products)
+    {
+        <div class="mb-5">
+            <p><strong>@p.Name </strong></p>
+            <p>Artikelnummer: @p.ArticleNumber </p>
+            <p class="text-muted mb-1"><small>@p.CategoryName</small></p>
+            <p>@p.Price :-</p>
+            <NavLink href="@("/admin/product/remove/" + p.ArticleNumber)" class="btn btn-danger">Ta bort produkt</NavLink>
+            <NavLink href="@("/admin/updateproduct/" + p.ArticleNumber)" class="btn btn-secondary">Updatera produkt</NavLink>
+        </div>
+    }
+}
+
+@code {
+    private Product[]? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var accessToken = await sessionStorage.GetItemAsync<string>("AccessToken");
+
+        //products = await Http.GetFromJsonAsync<Product[]>("https://localhost:7245/api/Products");
+
+        products = await Http.GetJsonAsync<Product[]>("https://localhost:7245/api/Products", new AuthenticationHeaderValue("Bearer", accessToken));
+    }
+
+    public class Product
+    {
+        public string ArticleNumber { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public decimal Price { get; set; }
+        public string CategoryName { get; set; } = null!;
+    }
+}

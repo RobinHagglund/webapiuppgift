@@ -1,0 +1,42 @@
+﻿@page "/SignUp"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div class ="container">
+    <h6>Sign up</h6>
+    <EditForm Model ="@UserSI" OnSubmit="HandleSignIn">
+        <InputText @bind-Value="UserSI.Email" placeholder="Email" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="UserSI.Password" placeholder="Password" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="UserSI.FirstName" placeholder="First Name" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="UserSI.LastName" placeholder="Last Name" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="UserSI.Adress" placeholder="Adress" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="UserSI.ZipCode" placeholder="ZipCode" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="UserSI.City" placeholder="City" class="form-control mb-1"></InputText>
+        <InputText @bind-Value="UserSI.Role" placeholder="Enter Role" class="form-control mb-1"></InputText>
+        <button type="submit" class="btn btn-primary">Sign up</button>
+    </EditForm>
+</div>
+
+
+@code {
+    public UserSignIn UserSI = new();
+
+    public async Task HandleSignIn()
+    {
+        var result = await Http.PostAsJsonAsync("https://localhost:7245/api/Authentication/SignUp", UserSI);
+        if (result.IsSuccessStatusCode)
+            NavigationManager.NavigateTo("/products");
+    }
+
+    public class UserSignIn
+    {
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string Adress { get; set; } = null!;
+        public string ZipCode { get; set; } = null!;
+        public string City { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string Role { get; set; } = null!;
+    }
+}

@@ -1,0 +1,47 @@
+﻿@page "/"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@*//@inject IJSRuntime JSRuntime*@
+
+<PageTitle>Welcome to webshopper!</PageTitle>
+
+<p>Please Sign in to use this site!</p>
+
+
+<div class ="container">
+    <h6>Sign in</h6>
+    <EditForm Model ="@UserSI" OnSubmit="HandleSignIn">
+        <InputText @bind-Value="UserSI.Email" placeholder="Email" class="form-control mb-1"></InputText>
+        <InputText type="password" @bind-Value="UserSI.Password" placeholder="Password" class="form-control mb-1"></InputText>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+        <NavLink href="SignUp">Create account</NavLink>
+    </EditForm>
+</div>
+
+@code {
+    public UserSignIn UserSI = new();
+    string message = string.Empty;
+
+    public async Task HandleSignIn()
+    {
+        var response = await Http.PostAsJsonAsync("https://localhost:7245/api/Authentication/SignIn", UserSI);
+
+        string responseStream = await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            await sessionStorage.SetItemAsync("AccessToken", responseStream);
+            await sessionStorage.SetItemAsync("Email", UserSI.Email);
+            //await JSRuntime.InvokeVoidAsync(identifier: "logInAlert");
+            NavigationManager.NavigateTo("/shoppingcart");
+        }
+    }
+
+    public class UserSignIn
+    {
+        public string Email { get; set; } = null!;
+        public string Password { get; set; } = null!;
+    }
+}
+
+@*//    robin.haegglund@gmail.com*@

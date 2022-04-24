@@ -1,0 +1,29 @@
+﻿@page "/admin"
+
+<h2>Adminsida för produkter och användare</h2>
+<hr />
+
+<h4>Produkthantering</h4>
+<hr />
+<nav class="flex-column">
+    <div class="nav-item px-3 mb-3">
+        <NavLink href="admin/addproduct" class="btn btn-primary">Klicka för att lägga till nya produkter</NavLink>
+    </div>
+    <div class="nav-item px-3 mb-3">
+        <NavLink href="admin/deleteproduct/" class="btn btn-primary">Klicka för att hantera produkter</NavLink>
+    </div>
+</nav>
+
+<hr />
+
+<h4>Användarhantering</h4>
+<nav class="flex-column">
+    <div class="nav-item px-3 mb-3">
+        <NavLink href="/admin/handleuser" class="btn btn-primary">Klicka för att hantera användare</NavLink>
+    </div>
+</nav>
+
+
+@code {
+
+}
